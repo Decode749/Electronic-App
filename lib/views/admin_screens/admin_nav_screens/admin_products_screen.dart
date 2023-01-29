@@ -10,10 +10,10 @@ class AdminProductsScreen extends StatefulWidget {
 }
 
 class _AdminProductsScreenState extends State<AdminProductsScreen> {
+
+  final searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-
-    final searchController = TextEditingController();
 
     return Scaffold(
       body: Column(
@@ -30,9 +30,10 @@ class _AdminProductsScreenState extends State<AdminProductsScreen> {
                 children: [
                   24.heightBox,
                   Row(
-                    children: [
-                      const Expanded(child: Text(
-                        "Welcome Back",
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: const [
+                      Expanded(child: Text(
+                        "Your Products",
                         style: TextStyle(
                             fontFamily: "Lato",
                             color: Colors.white,
@@ -40,25 +41,10 @@ class _AdminProductsScreenState extends State<AdminProductsScreen> {
                             fontWeight: FontWeight.w700),
                       ),
                       ),
-                      GestureDetector(
-                          onTap: (){},
-                          child: const Icon(Icons.more_vert, color: Colors.white)),
                     ],
                   ),
-                  8.heightBox,
-                  const Text("Admin", style: TextStyle(
-                    fontFamily: "Lato",
-                    color: Colors.white,
-                  ),),
-                  16.heightBox,
-                  CustomTextField(
-                    controller: searchController,
-                    hintText: "Search products...",
-                    fillColor: Colors.white,
-                    hintColor: textDarkGreyColor,
-                    borderColor: Colors.white,
-                  ),
-                  16.heightBox,
+
+                  20.heightBox,
                 ],
               ),
             ),

@@ -7,3 +7,7 @@ export 'package:velocity_x/velocity_x.dart';
 export 'package:get/get.dart';
 export 'package:mart_app/common/widgets/text_field.dart';
 export 'package:mart_app/common/widgets/main_button.dart';
+export 'utils.dart';
+export 'package:firebase_core/firebase_core.dart';
+export 'firebase_const.dart';
+export 'package:mart_app/controller/auth_controller.dart';

@@ -1,5 +1,6 @@
 import 'package:mart_app/constants/consts.dart';
-import 'package:mart_app/views/retail_screens/home_screen/rw_home_screen.dart';
+
+import '../home_screen/rw_home_screen.dart';
 
 class PayScreen extends StatefulWidget {
   const PayScreen({Key? key}) : super(key: key);
@@ -45,7 +46,7 @@ class _PayScreenState extends State<PayScreen> {
                       ),
                     ],
                   ),
-                  16.heightBox,
+                  20.heightBox,
                 ],
               ),
             ),

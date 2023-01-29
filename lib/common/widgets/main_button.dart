@@ -7,15 +7,17 @@ class MainButton extends StatelessWidget {
   final double vertPadding;
   final double? horiPadding;
   final double radius;
+  final Color color;
+  final double textSize;
 
-  const MainButton({Key? key, required this.btnText, required this.onTap, this.vertPadding = 16, this.horiPadding, this.radius = 16}) : super(key: key);
+  const MainButton({Key? key, required this.btnText, required this.onTap, this.vertPadding = 16, this.horiPadding, this.radius = 16, this.color = buttonColor, this.textSize = 14}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
 
     return Material(
       borderRadius: BorderRadius.circular(radius),
-      color: buttonColor,
+      color: color,
       child: InkWell(
         borderRadius: BorderRadius.circular(radius),
         onTap: onTap,
@@ -27,8 +29,8 @@ class MainButton extends StatelessWidget {
             children: [
               Text(
                 btnText,
-                style: const TextStyle(
-                    fontSize: 14,
+                style: TextStyle(
+                    fontSize: textSize,
                     color: Colors.white,
                     fontWeight: FontWeight.w600
                 ),

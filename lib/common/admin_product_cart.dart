@@ -1,4 +1,4 @@
-import 'package:mart_app/common/widgets/added_widget.dart';
+
 import 'package:mart_app/constants/consts.dart';
 
 class AdminProductCard extends StatefulWidget {
@@ -16,14 +16,14 @@ class _AdminProductCardState extends State<AdminProductCard> {
     return Container(
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-        color: primaryPurpleColor,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(8),
         boxShadow: const [
           BoxShadow(
-              color: Colors.black26,
-              offset: Offset(1, 1),
-              blurRadius: 1
-          )
+              color: shadowBlueColor,
+              offset: Offset(0.0, 0.0),
+              blurRadius: 4
+          ),
         ],
       ),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -63,7 +63,7 @@ class _AdminProductCardState extends State<AdminProductCard> {
                     style: TextStyle(
                       fontFamily: "Lato",
                       color: textDarkGreyColor,
-                      fontSize: 14,
+                      fontSize: 12,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
@@ -73,7 +73,7 @@ class _AdminProductCardState extends State<AdminProductCard> {
                     style: TextStyle(
                       fontFamily: "Lato",
                       color: textDarkGreyColor,
-                      fontSize: 14,
+                      fontSize: 12,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
@@ -83,7 +83,7 @@ class _AdminProductCardState extends State<AdminProductCard> {
                     style: TextStyle(
                       fontFamily: "Lato",
                       color: textDarkGreyColor,
-                      fontSize: 14,
+                      fontSize: 12,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
@@ -91,10 +91,31 @@ class _AdminProductCardState extends State<AdminProductCard> {
               ),
             ],
           ),
-          IconButton(
-            onPressed: (){},
-            icon: const Icon(Icons.more_vert, color: Colors.black,),
-          )
+          // IconButton(
+          //   onPressed: (){},
+          //   icon: const Icon(Icons.more_vert, color: Colors.black,),
+          // )
+          PopupMenuButton<int>(
+            itemBuilder: (context) => [
+              // popupmenu item 1
+              const PopupMenuItem(
+                value: 1,
+                // row has two child icon and text.
+                child:
+                Text("Mark Unavailable")
+              ),
+              // popupmenu item 2
+              const PopupMenuItem(
+                value: 2,
+                // row has two child icon and text
+                child:
+                Text("Change Details")
+              ),
+            ],
+            offset: const Offset(0, 100),
+            color: Colors.grey.shade50,
+            elevation: 2,
+          ),
         ],
       ),
     );

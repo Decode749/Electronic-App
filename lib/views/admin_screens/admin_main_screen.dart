@@ -1,5 +1,6 @@
 import 'package:mart_app/constants/consts.dart';
 
+import 'admin_nav_screens/admin_dashboard_screen.dart';
 import 'admin_nav_screens/admin_order_screen.dart';
 import 'admin_nav_screens/admin_post_screen.dart';
 import 'admin_nav_screens/admin_products_screen.dart';
@@ -14,8 +15,8 @@ class NavScreen extends StatefulWidget {
 class _NavScreenState extends State<NavScreen> {
 
   List pages = [
+    const AdminDashboardScreen(),
     const AdminProductsScreen(),
-    const AdminPostScreen(),
     const AdminOrderScreen(),
   ];
 
@@ -42,9 +43,21 @@ class _NavScreenState extends State<NavScreen> {
         selectedItemColor: Colors.white,
         elevation: 10,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.production_quantity_limits), label: "Products"),
-          BottomNavigationBarItem(icon: Icon(Icons.add_circle_outline), label: "Add Product"),
-          BottomNavigationBarItem(icon: Icon(Icons.shopping_basket_rounded), label: "Orders"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.dashboard_outlined),
+              activeIcon: Icon(Icons.dashboard),
+              label: "Dashboard",
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.card_membership_outlined),
+              activeIcon: Icon(Icons.card_membership),
+              label: "Product",
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.local_shipping_outlined),
+              activeIcon: Icon(Icons.local_shipping),
+              label: "Orders",
+          ),
         ],
       ),
     );

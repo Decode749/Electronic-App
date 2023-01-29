@@ -1,4 +1,4 @@
-import 'package:mart_app/common/widgets/added_widget.dart';
+
 import 'package:mart_app/constants/consts.dart';
 
 class FixedProductCard extends StatefulWidget {
@@ -18,14 +18,14 @@ class _FixedProductCardState extends State<FixedProductCard> {
     return Container(
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-          color: primaryPurpleColor,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(8),
           boxShadow: const [
             BoxShadow(
-                color: Colors.black26,
-                offset: Offset(1, 1),
-                blurRadius: 1
-            )
+                color: shadowBlueColor,
+                offset: Offset(0.0, 0.0),
+                blurRadius: 4
+            ),
           ],
       ),
       padding: const EdgeInsets.all(8),

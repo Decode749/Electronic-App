@@ -1,7 +1,7 @@
 import 'package:mart_app/constants/consts.dart';
-
-import '../../../common/product_card_vertical.dart';
+import '../../../common/wholesale_card_vert.dart';
 import '../cart_screen/cart_screen.dart';
+import '../user_profile/user_profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -46,26 +46,29 @@ class _HomeScreenState extends State<HomeScreen> {
                           fontWeight: FontWeight.w700),
                         ),
                       ),
-                      GestureDetector(
-                        onTap: (){},
-                          child: const Icon(Icons.favorite, color: Colors.white)),
-                      12.widthBox,
+                      14.widthBox,
                       GestureDetector(
                         onTap: (){
                           Get.to(const CartScreen());
                         },
-                          child: const Icon(Icons.shopping_cart_rounded, color: Colors.white)),
-                      12.widthBox,
+                          child: Stack(
+                              children: const [
+                                Icon(Icons.shopping_cart_rounded, color: Colors.white),
+                                CircleAvatar(
+                                  backgroundColor: Colors.red,
+                                  radius: 4,
+                                ),
+                              ],
+                          ),
+                      ),
+                      14.widthBox,
                       GestureDetector(
-                        onTap: (){},
-                          child: const Icon(Icons.more_vert, color: Colors.white)),
+                        onTap: (){
+                          Get.to(const ProfileScreen());
+                        },
+                          child: const Icon(Icons.person, color: Colors.white)),
                     ],
                   ),
-                  8.heightBox,
-                  const Text("Retail", style: TextStyle(
-                    fontFamily: "Lato",
-                    color: Colors.white,
-                  ),),
                   16.heightBox,
                   CustomTextField(
                     controller: searchController,
@@ -83,21 +86,20 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Scrollbar(
               child: GridView.count(
                 crossAxisCount: 2,
-                childAspectRatio: (1 / 1.42),
-                crossAxisSpacing: 6,
-                mainAxisSpacing: 6,
+                childAspectRatio: (1 / 1.55),
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
                 padding: const EdgeInsets.only(left: 12, right: 12, top: 16, bottom: 36),
                 shrinkWrap: true,
                 children: const [
-                  ProductCardVertical(),
-                  ProductCardVertical(),
-                  ProductCardVertical(),
-                  ProductCardVertical(),
-                  ProductCardVertical(),
-                  ProductCardVertical(),
-                  ProductCardVertical(),
-                  ProductCardVertical(),
-                  ProductCardVertical(),
+                  WholesaleCardVert(),
+                  WholesaleCardVert(),
+                  WholesaleCardVert(),
+                  WholesaleCardVert(),
+                  WholesaleCardVert(),
+                  WholesaleCardVert(),
+                  WholesaleCardVert(),
+                  WholesaleCardVert(),
                 ],
               ),
             ),

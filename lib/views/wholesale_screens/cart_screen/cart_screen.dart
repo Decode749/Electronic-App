@@ -1,6 +1,6 @@
 import 'package:mart_app/constants/consts.dart';
 
-import '../../../common/product_card_vertical.dart';
+import '../../../common/wholesale_card_vert.dart';
 import '../check_out_screen/check_out_screen.dart';
 
 class CartScreen extends StatefulWidget {
@@ -47,7 +47,7 @@ class _CartScreenState extends State<CartScreen> {
                       ),
                     ],
                   ),
-                  16.heightBox,
+                  20.heightBox,
                 ],
               ),
             ),
@@ -56,21 +56,19 @@ class _CartScreenState extends State<CartScreen> {
             child: Scrollbar(
               child: GridView.count(
                 crossAxisCount: 2,
-                childAspectRatio: (1 / 1.6),
-                crossAxisSpacing: 6,
-                mainAxisSpacing: 6,
+                childAspectRatio: (1 / 1.55),
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
                 padding: const EdgeInsets.only(left: 12, right: 12, top: 16, bottom: 36),
                 shrinkWrap: true,
                 children: const [
-                  ProductCardVertical(),
-                  ProductCardVertical(),
-                  ProductCardVertical(),
-                  ProductCardVertical(),
-                  ProductCardVertical(),
-                  ProductCardVertical(),
-                  ProductCardVertical(),
-                  ProductCardVertical(),
-                  ProductCardVertical(),
+                  WholesaleCardVert(),
+                  WholesaleCardVert(),
+                  WholesaleCardVert(),
+                  WholesaleCardVert(),
+                  WholesaleCardVert(),
+                  WholesaleCardVert(),
+                  WholesaleCardVert(),
                 ],
               ),
             ),
@@ -79,14 +77,14 @@ class _CartScreenState extends State<CartScreen> {
             alignment: Alignment.bottomCenter,
             child: Container(
               decoration: const BoxDecoration(
-                color: secondaryPurpleColor,
+                color: Colors.white,
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black26,
-                    offset: Offset(0, -1),
-                    blurRadius: 2
-                  )
+                    color: shadowBlueColor,
+                    offset: Offset(0.0, -1.0),
+                    blurRadius: 4
+                  ),
                 ]
               ),
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
