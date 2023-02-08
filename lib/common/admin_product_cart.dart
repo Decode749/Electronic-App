@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mart_app/constants/consts.dart';
 
 import '../controller/products_controller.dart';
-import '../views/admin_screens/admin_main_screen.dart';
 import '../views/admin_screens/admin_nav_screens/admin_post_screen.dart';
 
 class AdminProductCard extends StatefulWidget {
