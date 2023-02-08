@@ -7,7 +7,6 @@ import 'package:mart_app/constants/consts.dart';
 import 'package:mart_app/views/wholesale_screens/home_screen/rw_home_screen.dart';
 
 import '../admin_screens/admin_main_screen.dart';
-import '../admin_screens/admin_nav_screens/admin_dashboard_screen.dart';
 import '../auth_screen/kyc_screens/kyc_details_screen.dart';
 import '../auth_screen/kyc_screens/not_approved_screen.dart';
 import '../auth_screen/login_screen.dart';
@@ -32,9 +31,16 @@ class _SplashScreenState extends State<SplashScreen> {
       authState.listen((User? user) async {
         if(user == null && mounted){
           Get.off(()=> const LoginScreen());
+          count++;
         } else {
           if(currentUser!.uid == 'xt49SKgMMzRJS5C336OImbsl31o2'){
-            Get.off(()=> const NavScreen());
+            if(count==1){
+              Get.off(()=> const NavScreen());
+              count++;
+            } else {
+              Get.off(()=> const LoginScreen());
+              count++;
+            }
           } else {
             if(count==1){
               await FirebaseFirestore.instance
@@ -55,10 +61,12 @@ class _SplashScreenState extends State<SplashScreen> {
               count++;
             } else {
               Get.off(()=> const LoginScreen());
+              count++;
             }
           }
         }
       });
+
     });
 
 

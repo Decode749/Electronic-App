@@ -1,8 +1,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mart_app/constants/consts.dart';
-import 'package:mart_app/views/admin_screens/admin_main_screen.dart';
-
 import '../../controller/kyc_controller.dart';
 
 class KYCRequestsScreen extends StatefulWidget {

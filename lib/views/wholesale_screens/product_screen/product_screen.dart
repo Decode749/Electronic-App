@@ -1,8 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:mart_app/constants/consts.dart';
 
+import '../../../controller/products_controller.dart';
+
 class ProductScreen extends StatefulWidget {
-  const ProductScreen({Key? key}) : super(key: key);
+  final QueryDocumentSnapshot<Object?> data;
+
+  final QueryDocumentSnapshot<Object?> snap;
+
+  const ProductScreen({Key? key, required this.data, required this.snap}) : super(key: key);
 
   @override
   State<ProductScreen> createState() => _ProductScreenState();
@@ -13,17 +20,39 @@ class _ProductScreenState extends State<ProductScreen> {
   int counter = 0;
 
   final quantityController = TextEditingController();
+  var controller = Get.put(ProductsController());
+
+  @override
+  void initState() {
+    super.initState();
+
+    try {
+      counter = int.parse(widget.snap[widget.data['pid']]['quantity']);
+    } catch (e) {
+      counter = int.parse(widget.data['min_quantity']!) - 1;
+    }
+  }
 
   @override
   void dispose() {
     super.dispose();
     quantityController.dispose();
+    controller.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
 
     quantityController.text = counter.toString();
+    final name = widget.data['p_name'];
+    final wholesalePrice = widget.data['wholesale_price'];
+    final mrp = widget.data['mrp'];
+
+    final intWholesalePrice = int.parse(wholesalePrice);
+    final intMRP = int.parse(mrp);
+    final discount = ((intMRP - intWholesalePrice)/intMRP)*100;
+
+    var totalPrice = (counter + 1) * int.parse(widget.data['wholesale_price']!);
 
     return Scaffold(
       body: Column(
@@ -47,9 +76,9 @@ class _ProductScreenState extends State<ProductScreen> {
                         },
                         child: const Icon(Icons.arrow_back_rounded, color: Colors.white)),
                     12.widthBox,
-                    const Expanded(child: Text(
-                      "Product Name",
-                      style: TextStyle(
+                    Expanded(child: Text(
+                      name,
+                      style: const TextStyle(
                           fontFamily: "Lato",
                           color: Colors.white,
                           fontSize: 20,
@@ -80,11 +109,11 @@ class _ProductScreenState extends State<ProductScreen> {
                     child: Column(
                       children: [
                         Image.network(
-                          'https://i.pinimg.com/originals/52/11/96/521196ef0f94d8eea990b49bc801acc8.png',
+                          widget.data['photo_url'],
                           width: double.infinity,
                           fit: BoxFit.fill,
                         ),
-                        12.heightBox
+                        24.heightBox
                       ],
                     ),
                   ),
@@ -97,9 +126,9 @@ class _ProductScreenState extends State<ProductScreen> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.center,
-                          children: const [
-                            Text("50%", style: TextStyle(color: Colors.white, fontSize: 14),),
-                            Text("off", style: TextStyle(color: Colors.white, fontSize: 12),),
+                          children: [
+                            Text("${discount.toInt()}%", style: const TextStyle(color: Colors.white, fontSize: 14),),
+                            const Text("off", style: TextStyle(color: Colors.white, fontSize: 12),),
                           ],
                         ),
                       ),
@@ -107,7 +136,6 @@ class _ProductScreenState extends State<ProductScreen> {
                   )
                 ]
               ),
-              32.heightBox,
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
@@ -120,9 +148,9 @@ class _ProductScreenState extends State<ProductScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              "Product Name",
-                              style: TextStyle(
+                            Text(
+                              name,
+                              style: const TextStyle(
                                   fontFamily: "Lato",
                                   color: Colors.black,
                                   fontSize: 16,
@@ -132,9 +160,9 @@ class _ProductScreenState extends State<ProductScreen> {
                             14.heightBox,
                             Row(
                               children: [
-                                const Text(
-                                  "\$ 400",
-                                  style: TextStyle(
+                                Text(
+                                  "\$ $wholesalePrice",
+                                  style: const TextStyle(
                                       fontFamily: "Lato",
                                       color: Colors.black,
                                       fontSize: 24,
@@ -142,9 +170,9 @@ class _ProductScreenState extends State<ProductScreen> {
                                   ),
                                 ),
                                 12.widthBox,
-                                const Text(
-                                  "\$ 800",
-                                  style: TextStyle(
+                                Text(
+                                  "\$ $mrp",
+                                  style: const TextStyle(
                                       fontFamily: "Lato",
                                       color: textDarkGreyColor,
                                       fontSize: 16,
@@ -155,9 +183,9 @@ class _ProductScreenState extends State<ProductScreen> {
                               ],
                             ),
                             14.heightBox,
-                            const Text(
-                              "Minimum Qty: 15",
-                              style: TextStyle(
+                            Text(
+                              "Minimum Qty: ${widget.data['min_quantity']}",
+                              style: const TextStyle(
                                   fontFamily: "Lato",
                                   color: textDarkGreyColor,
                                   fontSize: 14,
@@ -193,9 +221,9 @@ class _ProductScreenState extends State<ProductScreen> {
                     6.heightBox,
                     const Divider(thickness: 2,),
                     6.heightBox,
-                    const Text(
-                      "Description / jndxiasn wndcdwn wn n n oinc nwk kwnon cka jnwkan bkjnck ds djkwk ckj jwdcne dw jkne w jk wk kwekj k w kdjnc k wqj  k jkwnkc wk wjk c eqk kwj kej kewkwjk ejc w",
-                      style: TextStyle(
+                    Text(
+                      widget.data['p_desc'],
+                      style: const TextStyle(
                           fontFamily: "Lato",
                           color: textDarkGreyColor,
                           fontSize: 14,
@@ -218,12 +246,22 @@ class _ProductScreenState extends State<ProductScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                counter == 0 ?MainButton(
+                12.heightBox,
+                widget.data['available'] == false ? const Center(child: Text("Unavailable", style: TextStyle(color: redColor, fontSize: 16, fontWeight: FontWeight.w600))) : counter == widget.data['min_quantity'] ? MainButton(
                   btnText: "Add to Cart",
-                  onTap: (){
+                  onTap: () async {
                     setState(() {
                       counter++;
                     });
+                    await controller.addToCart(
+                        pid: widget.data['pid'],
+                        quantity: counter.toString(),
+                        totalPrice: totalPrice.toString(),
+                        productUrl: widget.data['photo_url'],
+                        minQuantity: widget.data['min_quantity'],
+                        wholesalePrice: widget.data['wholesale_price'],
+                        context: context
+                    );
                   },
                 ) : Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -231,12 +269,27 @@ class _ProductScreenState extends State<ProductScreen> {
                     MainButton(
                       btnText: "-",
                       textSize: 16,
-                      onTap: (){
-                        setState(() {
-                          if(counter > 0){
+                      onTap: () async {
+                        if(counter > widget.data['min_quantity']){
+                          setState(() {
                             counter--;
-                          }
-                        });
+                          });
+                          await controller.updateCart(
+                              pid: widget.data['pid'],
+                              quantity: counter.toString(),
+                              totalPrice: totalPrice.toString(),
+                              productUrl: widget.data['photo_url'],
+                              minQuantity: widget.data['min_quantity'],
+                              wholesalePrice: widget.data['wholesale_price'],
+                              context: context
+                          );
+                        } else {
+                          setState(() {
+                            counter--;
+                          });
+                          await controller.deleteCart(
+                              pid: widget.data['pid'], context: context);
+                        }
                       },
                       radius: 36,
                       horiPadding: 22,
@@ -263,15 +316,38 @@ class _ProductScreenState extends State<ProductScreen> {
                                 // for version 2 and greater you can also use this
                                 FilteringTextInputFormatter.digitsOnly
                               ],
-                              onSubmitted: (val){
+                              onSubmitted: (val) async {
                                 if(val == ""){
                                   setState((){
-                                    counter = 0;
+                                    counter = int.parse(widget.data['min_quantity']!);
                                   });
-                                } else {
+                                  await controller.deleteCart(
+                                      pid: widget.data['pid'],
+                                      context: context);
+                                } else if (int.parse(val) <
+                                    int.parse(widget.data['min_quantity']!)) {
                                   setState(() {
-                                    counter = int.parse(val);
+                                    counter =
+                                        int.parse(widget.data['min_quantity']!);
                                   });
+                                  await controller.deleteCart(
+                                      pid: widget.data['pid'],
+                                      context: context);
+                                } else {
+                                  if(counter > int.parse(widget.data['min_quantity']!)) {
+                                    setState(() {
+                                      counter = int.parse(val);
+                                    });
+                                    await controller.updateCart(
+                                        pid: widget.data['pid'],
+                                        quantity: counter.toString(),
+                                        totalPrice: totalPrice.toString(),
+                                        productUrl: widget.data['photo_url'],
+                                        minQuantity: widget.data['min_quantity'],
+                                        wholesalePrice: widget.data['wholesale_price'],
+                                        context: context
+                                    );
+                                  }
                                 }
                               },
                             )
@@ -282,17 +358,26 @@ class _ProductScreenState extends State<ProductScreen> {
                     MainButton(
                       btnText: "+",
                       textSize: 16,
-                      onTap: (){
+                      onTap: () async {
                         setState(() {
                           counter++;
                         });
+                        await controller.updateCart(
+                            pid: widget.data['pid'],
+                            quantity: counter.toString(),
+                            totalPrice: totalPrice.toString(),
+                            productUrl: widget.data['photo_url'],
+                            minQuantity: widget.data['min_quantity'],
+                            wholesalePrice: widget.data['wholesale_price'],
+                            context: context
+                        );
                       },
                       radius: 36,
                       horiPadding: 20,
                     ),
                   ],
                 ),
-                16.heightBox
+                12.heightBox
               ],
             ),
           ),

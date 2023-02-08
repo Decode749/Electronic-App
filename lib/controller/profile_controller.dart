@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mart_app/constants/consts.dart';
+import 'package:uuid/uuid.dart';
 
 import '../constants/firebase_const.dart';
 
 class ProfileController extends GetxController{
+
+  var isLoading = false.obs;
 
   updateName(String name) async {
     var store = firestore.collection(usersCollection).doc(currentUser!.uid);
@@ -36,6 +39,35 @@ class ProfileController extends GetxController{
     }).catchError((e) {
       showSnackBar(e.toString(), context);
     });
+  }
+
+  String addressId = const Uuid().v1();
+
+  addAddress({
+    required houseNo,
+    required streetNo,
+    required locality,
+    required landmark,
+    required city,
+    required state,
+    required pincode,
+    required contactNo,
+
+  }) async {
+    var store = firestore.collection(usersCollection).doc(currentUser!.uid);
+    await store.set({
+      'address': FieldValue.arrayUnion([{
+        'address_code': addressId,
+        'house_no': houseNo,
+        'street_no': streetNo,
+        'locality': locality,
+        'landmark': landmark,
+        'city': city,
+        'state': state,
+        'pincode': pincode,
+        'contact_no': contactNo
+      }])
+    }, SetOptions(merge: true));
   }
   
 }

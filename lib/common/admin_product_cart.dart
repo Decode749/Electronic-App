@@ -1,14 +1,25 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mart_app/constants/consts.dart';
 
+import '../controller/products_controller.dart';
+import '../views/admin_screens/admin_main_screen.dart';
+import '../views/admin_screens/admin_nav_screens/admin_post_screen.dart';
+
 class AdminProductCard extends StatefulWidget {
-  const AdminProductCard({Key? key}) : super(key: key);
+  final QueryDocumentSnapshot<Object?> data;
+  const AdminProductCard({Key? key, required this.data}) : super(key: key);
 
   @override
   State<AdminProductCard> createState() => _AdminProductCardState();
 }
 
 class _AdminProductCardState extends State<AdminProductCard> {
+  var controller = Get.put(ProductsController());
+
+  final popUpMenuUnavailable = ["Mark Unavailable", "Change Details"];
+
+  final popUpMenuAvailable = ["Mark Available", "Change Details"];
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +50,7 @@ class _AdminProductCardState extends State<AdminProductCard> {
                 height: 74,
                 width: 74,
                 child: Image.network(
-                  "https://i.pinimg.com/originals/52/11/96/521196ef0f94d8eea990b49bc801acc8.png",
+                  widget.data['photo_url'],
                   fit: BoxFit.fill,
                 ),
               ),
@@ -48,9 +59,9 @@ class _AdminProductCardState extends State<AdminProductCard> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    "Product Name",
-                    style: TextStyle(
+                  Text(
+                    widget.data['p_name'],
+                    style: const TextStyle(
                       fontFamily: "Lato",
                       color: Colors.black,
                       fontSize: 14,
@@ -58,9 +69,9 @@ class _AdminProductCardState extends State<AdminProductCard> {
                     ),
                   ),
                   6.heightBox,
-                  const Text(
-                    "Retail Price: \$200",
-                    style: TextStyle(
+                  Text(
+                    "MRP: \$${widget.data['mrp']}",
+                    style: const TextStyle(
                       fontFamily: "Lato",
                       color: textDarkGreyColor,
                       fontSize: 12,
@@ -68,9 +79,9 @@ class _AdminProductCardState extends State<AdminProductCard> {
                     ),
                   ),
                   6.heightBox,
-                  const Text(
-                    "Wholesale Price: \$150",
-                    style: TextStyle(
+                  Text(
+                    "Wholesale Price: \$${widget.data['wholesale_price']}",
+                    style: const TextStyle(
                       fontFamily: "Lato",
                       color: textDarkGreyColor,
                       fontSize: 12,
@@ -78,9 +89,9 @@ class _AdminProductCardState extends State<AdminProductCard> {
                     ),
                   ),
                   6.heightBox,
-                  const Text(
-                    "Min Quantity: 6",
-                    style: TextStyle(
+                  Text(
+                    "Min Quantity: ${widget.data['min_quantity']}",
+                    style: const TextStyle(
                       fontFamily: "Lato",
                       color: textDarkGreyColor,
                       fontSize: 12,
@@ -95,27 +106,71 @@ class _AdminProductCardState extends State<AdminProductCard> {
           //   onPressed: (){},
           //   icon: const Icon(Icons.more_vert, color: Colors.black,),
           // )
-          PopupMenuButton<int>(
-            itemBuilder: (context) => [
-              // popupmenu item 1
-              const PopupMenuItem(
-                value: 1,
-                // row has two child icon and text.
-                child:
-                Text("Mark Unavailable")
+          VxPopupMenu(
+            arrowSize: 0.0,
+            menuBuilder: () => Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: Colors.white,
               ),
-              // popupmenu item 2
-              const PopupMenuItem(
-                value: 2,
-                // row has two child icon and text
-                child:
-                Text("Change Details")
+              padding: const EdgeInsets.all(8),
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: () async {
+                      await controller.unavailableProduct(available: widget.data['available'] ? false : true, context: context, pid: widget.data['pid']);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      child: widget.data['available'] ? const Text("Mark Unavailable") : const Text("Mark Available"),
+                    ),
+                  ),
+                  const SizedBox(width: 124 ,child: Divider()),
+                  GestureDetector(
+                    onTap: () {
+                      Get.to(() => AdminPostScreen(isEdit: true, data: widget.data));
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      child: const Text("Change Details"),
+                    ),
+                  ),
+                ],
               ),
-            ],
-            offset: const Offset(0, 100),
-            color: Colors.grey.shade50,
-            elevation: 2,
+            ).onTap(() {
+              VxPopupMenuController().hideMenu();
+            }),
+            clickType: VxClickType.singleClick,
+            child: const Icon(Icons.more_vert, size: 26,),
           ),
+
+          // PopupMenuButton<int>(
+          //   itemBuilder: (context) => [
+          //     // popupmenu item 1
+          //     PopupMenuItem(
+          //       value: 1,
+          //       // row has two child icon and text.
+          //       onTap: () async {
+          //         await controller.unavailableProduct(available: data['available'] ? false : true, context: context, pid: data['pid']);
+          //       },
+          //       child:
+          //       data['available'] ? const Text("Mark Unavailable") : const Text("Mark Available"),
+          //     ),
+          //     // popupmenu item 2
+          //     PopupMenuItem(
+          //       value: 2,
+          //       onTap: () {
+          //         Get.to(() => const AdminPostScreen());
+          //       },
+          //       // row has two child icon and text
+          //       child:
+          //       const Text("Change Details")
+          //     ),
+          //   ],
+          //   offset: const Offset(0, 100),
+          //   color: Colors.grey.shade100,
+          //   elevation: 2,
+          // ),
         ],
       ),
     );

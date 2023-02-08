@@ -3,7 +3,9 @@ import 'package:mart_app/constants/consts.dart';
 import '../home_screen/rw_home_screen.dart';
 
 class PayScreen extends StatefulWidget {
-  const PayScreen({Key? key}) : super(key: key);
+  final int totalAmount;
+  final int totalItems;
+  const PayScreen({Key? key, required this.totalAmount, required this.totalItems}) : super(key: key);
 
   @override
   State<PayScreen> createState() => _PayScreenState();
@@ -31,7 +33,7 @@ class _PayScreenState extends State<PayScreen> {
                     children: [
                       GestureDetector(
                           onTap: (){
-                            Get.back();
+                            Navigator.pop(context, true);
                           },
                           child: const Icon(Icons.arrow_back_rounded, color: Colors.white)),
                       12.widthBox,
@@ -61,8 +63,8 @@ class _PayScreenState extends State<PayScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: const [
-                      Text(
+                    children: [
+                      const Text(
                         "Total Amount",
                         style: TextStyle(
                             fontFamily: "Lato",
@@ -72,8 +74,8 @@ class _PayScreenState extends State<PayScreen> {
                         ),
                       ),
                       Text(
-                        "\$ 1200",
-                        style: TextStyle(
+                        "\$ ${widget.totalAmount}",
+                        style: const TextStyle(
                             fontFamily: "Lato",
                             color: Colors.black,
                             fontSize: 16,
@@ -86,8 +88,8 @@ class _PayScreenState extends State<PayScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: const [
-                      Text(
+                    children: [
+                      const Text(
                         "Total number of items",
                         style: TextStyle(
                           fontFamily: "Lato",
@@ -96,8 +98,8 @@ class _PayScreenState extends State<PayScreen> {
                         ),
                       ),
                       Text(
-                        "4 Products",
-                        style: TextStyle(
+                        "${widget.totalItems} Products",
+                        style: const TextStyle(
                           fontFamily: "Lato",
                           color: textDarkGreyColor,
                           fontSize: 14,

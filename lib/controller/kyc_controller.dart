@@ -78,6 +78,11 @@ class KYCController extends GetxController{
       isLoading(false);
       showSnackBar(error.toString(), context);
     });
+    var store2 = firestore.collection(cartCollection).doc(uid);
+    await store2.set({
+      'uid': uid,
+      'cart': [],
+    });
   }
 
   declineKYCEvent({required uid, required context}) async {

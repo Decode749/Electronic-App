@@ -16,4 +16,13 @@ class FirestoreServices {
     return firestore.collection(productsCollection).snapshots();
   }
 
+  static getCartDetails({required uid}){
+    return firestore.collection(cartCollection).where('uid', isEqualTo: uid).snapshots();
+  }
+
+  static getSpecificProducts({required pid}){
+    return firestore.collection(productsCollection).where('pid', isEqualTo: pid).snapshots();
+  }
+
+
 }
