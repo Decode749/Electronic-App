@@ -1,11 +1,14 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mart_app/constants/consts.dart';
 
 import '../../../controller/products_controller.dart';
 
 class AdminPostScreen extends StatefulWidget {
-  const AdminPostScreen({Key? key}) : super(key: key);
+  final bool isEdit;
+  final QueryDocumentSnapshot<Object?>? data;
+  const AdminPostScreen({Key? key, this.isEdit = false, this.data}) : super(key: key);
 
   @override
   State<AdminPostScreen> createState() => _AdminPostScreenState();
@@ -22,6 +25,18 @@ class _AdminPostScreenState extends State<AdminPostScreen> {
   final descriptionController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    if(widget.isEdit){
+      productNameController.text = widget.data!['p_name'];
+      mrpController.text = widget.data!['mrp'];
+      wholesaleQtyController.text = widget.data!['min_quantity'];
+      wholesalePriceController.text = widget.data!['wholesale_price'];
+      descriptionController.text = widget.data!['p_desc'];
+    }
+  }
+
+  @override
   void dispose() {
     super.dispose();
 
@@ -35,6 +50,7 @@ class _AdminPostScreenState extends State<AdminPostScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -59,14 +75,22 @@ class _AdminPostScreenState extends State<AdminPostScreen> {
                           },
                           child: const Icon(Icons.arrow_back_rounded, color: Colors.white)),
                       12.widthBox,
-                       const Expanded(child: Text(
-                        "Add Product",
-                        style: TextStyle(
-                            fontFamily: "Lato",
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700),
-                      ),
+                       Expanded(
+                         child: widget.isEdit ? const Text(
+                            "Edit Product Details",
+                            style: TextStyle(
+                                fontFamily: "Lato",
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700),
+                          ) : const Text(
+                           "Add Product",
+                           style: TextStyle(
+                               fontFamily: "Lato",
+                               color: Colors.white,
+                               fontSize: 20,
+                               fontWeight: FontWeight.w700),
+                         ),
                       ),
                     ],
                   ),
@@ -90,7 +114,7 @@ class _AdminPostScreenState extends State<AdminPostScreen> {
                         },
                         child: AspectRatio(
                           aspectRatio: 1/1,
-                          child: controller.pImage != null ? Image.file(controller.pImage, fit: BoxFit.cover,) : Container(
+                          child: controller.pImage != null ? Image.file(controller.pImage, fit: BoxFit.cover,) : widget.isEdit ? Image.network(widget.data!['photo_url'], fit: BoxFit.cover,) : Container(
                             width: MediaQuery.of(context).size.width,
                             color: Colors.black26,
                             child: Center(
@@ -160,15 +184,30 @@ class _AdminPostScreenState extends State<AdminPostScreen> {
                       ),
                       20.heightBox,
                       MainButton(
-                          btnText: "Add Product",
-                          onTap: () async {
+                          btnText: widget.isEdit ? "Update Product" : "Add Product",
+                          onTap: widget.isEdit ? () async {
+                            controller.isLoading(true);
+                            if(controller.pImage != null){
+                              await controller.updateImage(pid: widget.data!['pid']);
+                            }
+                            await controller.updateProduct(
+                              pid: widget.data!['pid'],
+                              pName: productNameController.text,
+                              mrp: mrpController.text.toString(),
+                              wholesalePrice: wholesalePriceController.text.toString(),
+                              minQuantity: wholesaleQtyController.text.toString(),
+                              desc: descriptionController.text,
+                              context: context
+                            );
+                            Get.back();
+                          } : () async {
                             controller.isLoading(true);
                             await controller.uploadImage();
                             await controller.uploadProduct(
                               pName: productNameController.text,
-                              mrp: mrpController.text,
-                              wholesalePrice: wholesalePriceController.text,
-                              minQuantity: wholesaleQtyController.text,
+                              mrp: mrpController.text.toString(),
+                              wholesalePrice: wholesalePriceController.text.toString(),
+                              minQuantity: wholesaleQtyController.text.toString(),
                               desc: descriptionController.text,
                               context: context
                             );

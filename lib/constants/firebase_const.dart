@@ -12,4 +12,4 @@ const  usersCollection = "users";
 const  productsCollection = "products";
 
 const  adminCollection = "admin";
-const requestCollection = "requests";
+const cartCollection = "cart";

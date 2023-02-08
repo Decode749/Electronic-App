@@ -43,7 +43,8 @@ class AuthController extends GetxController{
       'uid': currentUser!.uid,
       'isApproved': false,
       'kycReqSent': false,
-      'address': []
+      'address': [],
+      'prev_orders': [],
     });
   }
 

@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mart_app/constants/consts.dart';
 import '../../../common/wholesale_card_vert.dart';
+import '../../../services/firestore_services.dart';
 import '../cart_screen/cart_screen.dart';
 import '../user_profile/user_profile_screen.dart';
 
@@ -19,6 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
     searchController.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,35 +40,40 @@ class _HomeScreenState extends State<HomeScreen> {
                   24.heightBox,
                   Row(
                     children: [
-                      const Expanded(child: Text(
-                        "Welcome Back",
-                        style: TextStyle(
-                          fontFamily: "Lato",
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700),
+                      const Expanded(
+                        child: Text(
+                          "Welcome Back",
+                          style: TextStyle(
+                              fontFamily: "Lato",
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700),
                         ),
                       ),
                       14.widthBox,
                       GestureDetector(
-                        onTap: (){
-                          Get.to(const CartScreen());
+                        onTap: () async {
+                          bool refresh = await Navigator.push(context, MaterialPageRoute(builder: (context) => const CartScreen()));
+                          if(refresh){
+                            setState(() {});
+                          }
                         },
-                          child: Stack(
-                              children: const [
-                                Icon(Icons.shopping_cart_rounded, color: Colors.white),
-                                CircleAvatar(
-                                  backgroundColor: Colors.red,
-                                  radius: 4,
-                                ),
-                              ],
-                          ),
+                        child: Stack(
+                          children: const [
+                            Icon(Icons.shopping_cart_rounded,
+                                color: Colors.white),
+                            CircleAvatar(
+                              backgroundColor: Colors.red,
+                              radius: 4,
+                            ),
+                          ],
+                        ),
                       ),
                       14.widthBox,
                       GestureDetector(
-                        onTap: (){
-                          Get.to(const ProfileScreen());
-                        },
+                          onTap: () {
+                            Get.to(() => const ProfileScreen());
+                          },
                           child: const Icon(Icons.person, color: Colors.white)),
                     ],
                   ),
@@ -84,23 +92,62 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Expanded(
             child: Scrollbar(
-              child: GridView.count(
-                crossAxisCount: 2,
-                childAspectRatio: (1 / 1.55),
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                padding: const EdgeInsets.only(left: 12, right: 12, top: 16, bottom: 36),
-                shrinkWrap: true,
-                children: const [
-                  WholesaleCardVert(),
-                  WholesaleCardVert(),
-                  WholesaleCardVert(),
-                  WholesaleCardVert(),
-                  WholesaleCardVert(),
-                  WholesaleCardVert(),
-                  WholesaleCardVert(),
-                  WholesaleCardVert(),
-                ],
+              child: StreamBuilder(
+                stream: FirestoreServices.getAllProducts(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.active) {
+                    return GridView.builder(
+                        shrinkWrap: true,
+                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent:
+                                MediaQuery.of(context).size.width / 2,
+                            childAspectRatio: (1 / 1.55),
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12),
+                        itemCount: snapshot.data!.docs.length,
+                        padding: const EdgeInsets.only(
+                            left: 12, right: 12, top: 16, bottom: 44),
+                        itemBuilder: (BuildContext context, index) {
+                          var data = snapshot.data!.docs[index];
+
+                          return StreamBuilder(
+                              stream: FirestoreServices.getCartDetails(
+                                  uid: currentUser!.uid),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<QuerySnapshot> snap) {
+                                if (snap.connectionState ==
+                                    ConnectionState.active) {
+                                  var dataSnap = snap.data!.docs[0];
+
+                                  if (!snap.hasData) {
+                                    return const Center(
+                                        child: CircularProgressIndicator(
+                                      color: buttonColor,
+                                    ));
+                                  } else {
+                                    return WholesaleCardVert(
+                                      data: data,
+                                      snap: dataSnap,
+                                    );
+                                  }
+                                } else {
+                                  return const Center(
+                                      child: CircularProgressIndicator(
+                                    color: buttonColor,
+                                  ));
+                                }
+                              });
+                        });
+                  } else if (snapshot.hasError) {
+                    return const Center(child: Text("Some Error Occurred"));
+                  } else {
+                    return const Center(
+                        child: CircularProgressIndicator(
+                      color: buttonColor,
+                    ));
+                  }
+                },
               ),
             ),
           ),

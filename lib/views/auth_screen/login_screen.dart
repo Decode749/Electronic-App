@@ -23,7 +23,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String? selected ;
 
-  final loginOptions = ['Login for Wholesale','Login as Admin'];
+  int selectedItem = 0;
+
+  final loginOptions = ['Login for Wholesale', 'Login as Admin'];
 
   DropdownMenuItem buildMenuItem(String item) {
     return DropdownMenuItem(value: item, child:
@@ -43,11 +45,12 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
     emailController.dispose();
     passwordController.dispose();
+    controller.dispose();
   }
 
-  int selectedItem = 0;
 
   void validateAdmin(context) {
+
 
     FirebaseFirestore.instance
         .collection(adminCollection)
@@ -81,6 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+
 
     return Scaffold(
       body: SafeArea(
